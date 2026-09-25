@@ -1,0 +1,552 @@
+/* ============================================================
+   Кроссворды и расследования — стили интерфейса
+   Палитра: глубокий синий (ночь/таинственность) + золото (детектив)
+   + кремовый (бумага кроссворда) + бордо (акцент улик)
+   ============================================================ */
+
+/* ---------- Переменные ---------- */
+:root {
+  /* Фон «рабочего стола» вокруг телефона */
+  --desk-bg: #10151f;
+  --desk-bg-2: #1a2230;
+
+  /* Фон приложения */
+  --app-bg: #1c2534;
+  --surface: #263146;
+  --surface-2: #2f3c55;
+
+  /* Бумага кроссворда */
+  --paper: #f4ead4;
+  --paper-dark: #e2d2b4;
+
+  /* Текст */
+  --ink: #24201a;
+  --text-light: #f2ead9;
+  --text-muted: #97a3b8;
+
+  /* Акценты */
+  --gold: #d9a24e;
+  --gold-soft: #eec27e;
+  --gold-deep: #b9823a;
+  --bordo: #b4553d;
+  --ok: #6fbf6f;
+
+  /* Тени и скругления */
+  --shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+  --radius: 16px;
+
+  --font-title: "Playfair Display", Georgia, "Times New Roman", serif;
+  --font-body: "Inter", "Segoe UI", system-ui, sans-serif;
+}
+
+/* ---------- Сброс ---------- */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body { height: 100%; }
+
+body {
+  font-family: var(--font-body);
+  color: var(--text-light);
+  background:
+    radial-gradient(1200px 600px at 20% -10%, var(--desk-bg-2), transparent 60%),
+    radial-gradient(900px 500px at 110% 110%, #1a1f2b, transparent 55%),
+    var(--desk-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ============================================================
+   Сцена и рамка телефона
+   ============================================================ */
+.stage {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+/* На ПК приложение — центральная треть экрана (рамка телефона) */
+.phone {
+  position: relative;
+  width: min(420px, 32vw, 100%);
+  height: min(840px, 94vh, 94dvh);
+  background: var(--app-bg);
+  border-radius: 28px;
+  padding: 10px;
+  box-shadow: var(--shadow), 0 0 0 6px #0c0f16, 0 0 0 8px #2c3a52;
+  display: flex;
+}
+
+/* «Экран» внутри рамки телефона */
+.phone__screen {
+  flex: 1;
+  border-radius: 20px;
+  overflow: hidden;
+  background:
+    radial-gradient(600px 300px at 50% -5%, rgba(217, 162, 78, 0.12), transparent 55%),
+    linear-gradient(180deg, #1e2838 0%, #1c2534 100%);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* ============================================================
+   Экраны: показ/скрытие и анимация
+   ============================================================ */
+.screen {
+  display: none;
+  flex: 1;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.screen.active {
+  display: flex;
+  animation: screen-in 0.35s ease both;
+}
+
+@keyframes screen-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   Кнопки
+   ============================================================ */
+.btn {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.2px;
+  color: var(--text-light);
+  background: var(--surface);
+  border: 1px solid transparent;
+  border-radius: 12px;
+  padding: 13px 18px;
+  cursor: pointer;
+  transition: transform 0.08s ease, background 0.2s ease, box-shadow 0.2s ease;
+  width: 100%;
+}
+
+.btn:hover { filter: brightness(1.08); }
+.btn:active { transform: scale(0.97); }
+.btn:focus-visible { outline: 2px solid var(--gold-soft); outline-offset: 2px; }
+
+/* Главная золотая кнопка */
+.btn--gold {
+  background: linear-gradient(180deg, var(--gold-soft), var(--gold) 60%, var(--gold-deep));
+  color: #2b1e0b;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.25);
+  box-shadow: 0 8px 18px rgba(217, 162, 78, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+/* Контурная кнопка */
+.btn--outline {
+  background: transparent;
+  border-color: var(--gold);
+  color: var(--gold-soft);
+}
+
+/* «Призрачная» кнопка для верхней панели игры */
+.btn--ghost {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+/* Маленькая кнопка */
+.btn--small {
+  width: auto;
+  padding: 9px 14px;
+  font-size: 13px;
+}
+
+/* ============================================================
+   ЭКРАН 1 — Старт
+   ============================================================ */
+.screen--start {
+  justify-content: space-between;
+  padding: 26px 22px 22px;
+  text-align: center;
+}
+
+.start__top { margin-top: auto; }
+
+/* Логотип: сетка кроссворда + лупа */
+.logo {
+  position: relative;
+  width: 104px;
+  height: 104px;
+  margin: 0 auto 20px;
+}
+
+.logo__grid {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: 6px;
+  transform: rotate(-8deg);
+}
+
+.logo__grid i {
+  background: var(--paper);
+  border-radius: 4px;
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.12);
+}
+
+/* Заполняем «буквами» часть клеток */
+.logo__grid i:nth-child(2) { background: var(--surface); }
+.logo__grid i:nth-child(6) { background: var(--surface); }
+.logo__grid i:nth-child(7) { background: var(--surface); }
+
+/* Лупа поверх сетки */
+.logo__lens {
+  position: absolute;
+  right: -8px;
+  bottom: -6px;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.14);
+  border: 4px solid var(--gold);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
+}
+
+.logo__lens::after {
+  content: "";
+  position: absolute;
+  left: 34px;
+  top: 34px;
+  width: 24px;
+  height: 5px;
+  background: var(--gold);
+  border-radius: 3px;
+  transform: rotate(45deg);
+  transform-origin: 0 0;
+}
+
+.title {
+  font-family: var(--font-title);
+  font-weight: 800;
+  font-size: 30px;
+  line-height: 1.08;
+  color: var(--text-light);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+}
+
+.subtitle {
+  margin-top: 10px;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.start__buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 28px 0 14px;
+}
+
+.start__hint {
+  color: var(--text-muted);
+  font-size: 12px;
+  margin-bottom: auto;
+}
+
+/* ============================================================
+   ЭКРАН 2 — Игра
+   ============================================================ */
+.screen--game { flex-direction: column; }
+
+/* Верхняя 1/8 */
+.game__top {
+  height: 12.5%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 0 12px;
+}
+
+.game__level {
+  font-family: var(--font-title);
+  font-size: 15px;
+  color: var(--gold-soft);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 40%;
+}
+
+/* Средняя часть с полем */
+.game__field {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 8px;
+  min-height: 0;
+}
+
+/* ============================================================
+   Поле кроссворда
+   ============================================================ */
+.crossword {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+  padding: 8px;
+  background: var(--surface);
+  border-radius: 12px;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.35);
+  width: min(92%, 340px);
+}
+
+.cell {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 5px;
+  background: var(--paper);
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.12);
+}
+
+.cell--block {
+  background: var(--surface-2);
+  box-shadow: none;
+}
+
+.cell__num {
+  position: absolute;
+  top: 2px;
+  left: 3px;
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--gold-deep);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.cell__input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: transparent;
+  text-align: center;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--ink);
+  text-transform: uppercase;
+  caret-color: var(--bordo);
+}
+
+.cell__input:focus {
+  outline: none;
+  background: var(--gold-soft);
+  border-radius: 5px;
+}
+
+/* Подсказка текущего вопроса */
+.clue {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 13px;
+  padding: 0 14px;
+  max-width: 92%;
+}
+
+/* Нижняя 1/8 — реклама */
+.game__ad {
+  height: 12.5%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 6px 12px;
+}
+
+.ad__label {
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.ad__slot {
+  width: 100%;
+  flex: 1;
+  max-height: 56px;
+  border: 1px dashed rgba(255, 255, 255, 0.18);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+/* ============================================================
+   Общие панели (заголовок/подвал) для экранов 3 и 4
+   ============================================================ */
+.panel__header {
+  padding: 18px 20px 12px;
+}
+
+.panel__header h2 {
+  font-family: var(--font-title);
+  font-weight: 700;
+  font-size: 24px;
+  color: var(--text-light);
+}
+
+.panel__footer {
+  padding: 12px 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ============================================================
+   ЭКРАН 3 — Вопросы
+   ============================================================ */
+.screen--questions { flex-direction: column; }
+
+.questions {
+  flex: 1;
+  overflow-y: auto;
+  padding: 6px 18px 12px;
+  min-height: 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--surface-2) transparent;
+}
+
+.questions__group {
+  margin-bottom: 14px;
+}
+
+.questions__group-title {
+  font-family: var(--font-title);
+  font-size: 15px;
+  color: var(--gold-soft);
+  margin: 10px 0 6px;
+}
+
+.question-item {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px 12px;
+  margin-bottom: 6px;
+  background: var(--surface);
+  border-radius: 10px;
+  border-left: 3px solid var(--gold);
+}
+
+.question-item__num {
+  font-weight: 700;
+  color: var(--gold-soft);
+  min-width: 22px;
+}
+
+.question-item__text { font-size: 14px; color: var(--text-light); }
+
+/* ============================================================
+   ЭКРАН 4 — Меню (уровни)
+   ============================================================ */
+.screen--menu { flex-direction: column; }
+
+/* Верхние 2/3 — скролл-лист уровней */
+.menu__list {
+  flex: 2;
+  overflow-y: auto;
+  padding: 16px 18px 8px;
+  min-height: 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--surface-2) transparent;
+}
+
+.menu__list h2 {
+  font-family: var(--font-title);
+  font-size: 22px;
+  margin-bottom: 10px;
+}
+
+.level-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 13px 14px;
+  margin-bottom: 8px;
+  background: var(--surface);
+  border-radius: 11px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.level-item:hover { background: var(--surface-2); }
+
+.level-item__name { font-size: 15px; color: var(--text-light); }
+
+/* Галочка — появляется на выбранном уровне */
+.level-item__check {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  display: grid;
+  place-items: center;
+  color: transparent;
+  font-size: 15px;
+  font-weight: 700;
+  flex: none;
+  transition: all 0.15s ease;
+}
+
+.level-item.active {
+  border-color: var(--gold);
+  background: linear-gradient(180deg, #2f3c55, #263146);
+}
+
+.level-item.active .level-item__check {
+  background: var(--ok);
+  border-color: var(--ok);
+  color: #fff;
+}
+
+/* Нижняя треть — три кнопки */
+.menu__actions {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 18px 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ============================================================
+   Адаптивность: телефон — на весь экран, ПК — рамка в центре
+   ============================================================ */
+@media (max-width: 640px) {
+  .stage { padding: 0; }
+
+  .phone {
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    border-radius: 0;
+    padding: 0;
+    box-shadow: none;
+  }
+
+  .phone__screen { border-radius: 0; }
+}
+
+/* На очень широких мониторах рамка не разъезжается */
+@media (min-width: 1600px) {
+  .phone { width: 420px; }
+}

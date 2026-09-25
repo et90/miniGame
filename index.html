@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Кроссворды и расследования</title>
+
+  <!-- Шрифты: Playfair Display для заголовков (детективная классика) и Inter для текста -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Сцена: на ПК фон-«детективный стол», по центру — рамка телефона -->
+  <div class="stage">
+    <!-- Рамка телефона (на ПК занимает центральную треть экрана) -->
+    <div class="phone">
+      <div class="phone__screen">
+        <!-- ================= ЭКРАН 1: СТАРТ ================= -->
+        <section class="screen screen--start active" id="screen-start">
+          <div class="start__top">
+            <!-- Логотип: лупа + клетки кроссворда -->
+            <div class="logo">
+              <span class="logo__grid" aria-hidden="true">
+                <i></i><i></i><i></i>
+                <i></i><i></i><i></i>
+                <i></i><i></i><i></i>
+              </span>
+              <span class="logo__lens" aria-hidden="true"></span>
+            </div>
+            <h1 class="title">Кроссворды<br />и расследования</h1>
+            <p class="subtitle">Распутывай загадки, буква за буквой</p>
+          </div>
+
+          <div class="start__buttons">
+            <button class="btn btn--gold" data-nav="screen-game">Старт</button>
+            <button class="btn btn--outline" id="btn-restart">Начать заново</button>
+            <button class="btn btn--outline" id="btn-continue">Продолжить</button>
+          </div>
+
+          <p class="start__hint">Подсказка: «Продолжить» вернёт сохранённый прогресс</p>
+        </section>
+
+        <!-- ================= ЭКРАН 2: ИГРА ================= -->
+        <section class="screen screen--game" id="screen-game">
+          <!-- Верхняя 1/8: две кнопки -->
+          <div class="game__top">
+            <button class="btn btn--small btn--ghost" data-nav="screen-menu">Меню</button>
+            <div class="game__level" id="game-level">Уровень 1</div>
+            <button class="btn btn--small btn--ghost" data-nav="screen-questions">Вопросы</button>
+          </div>
+
+          <!-- Средняя часть: игровое поле -->
+          <div class="game__field">
+            <div class="crossword" id="crossword" role="grid" aria-label="Игровое поле кроссворда"></div>
+            <p class="clue" id="clue-text">Нажмите на клетку, чтобы увидеть вопрос</p>
+          </div>
+
+          <!-- Нижняя 1/8: блок под рекламу -->
+          <div class="game__ad">
+            <span class="ad__label">Реклама</span>
+            <div class="ad__slot"></div>
+          </div>
+        </section>
+
+        <!-- ================= ЭКРАН 3: ВОПРОСЫ ================= -->
+        <section class="screen screen--questions" id="screen-questions">
+          <header class="panel__header">
+            <h2>Вопросы</h2>
+          </header>
+
+          <!-- Скролл-лист с вопросами на весь экран -->
+          <div class="questions" id="questions-list"></div>
+
+          <div class="panel__footer">
+            <button class="btn btn--gold" data-nav="screen-game">Назад</button>
+          </div>
+        </section>
+
+        <!-- ================= ЭКРАН 4: МЕНЮ (УРОВНИ) ================= -->
+        <section class="screen screen--menu" id="screen-menu">
+          <!-- Верхние 2/3: скролл-лист уровней -->
+          <div class="menu__list" id="levels-list"></div>
+
+          <!-- Нижняя треть: три кнопки -->
+          <div class="menu__actions">
+            <button class="btn btn--gold" id="btn-go-level">Перейти на уровень</button>
+            <button class="btn btn--outline" data-nav="screen-game">Вернуться в игру</button>
+            <button class="btn btn--outline" data-nav="screen-start">В начало</button>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <script src="main.js" type="module"></script>
+</body>
+</html>
