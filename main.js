@@ -181,111 +181,10 @@ function levelsName(_levels) {
 // Каждое слово: направление, координаты первой буквы, слово и подсказка
 const SIZE = 7; // размер игрового поля 7x7
 
-const WORDS = [
-  { dir: "down", row: 0, col: 3, word: "УЛИКА", clue: "Вещественное доказательство" },
-  { dir: "down", row: 0, col: 5, word: "ДОКАЗ", clue: "Факт, подтверждающий вину" },
-  { dir: "across", row: 2, col: 0, word: "ЗАГАДКА", clue: "То, что предстоит разгадать" },
-  { dir: "down", row: 2, col: 6, word: "АЛИБИ", clue: "Доказательство невиновности" },
-  { dir: "across", row: 4, col: 0, word: "СЫЩИК", clue: "Частный детектив" },
-];
-
-// Названия уровней для экрана «Меню»
-const LEVELS = [
-  "Первые улики",
-  "Ночное происшествие",
-  "Таинственный особняк",
-  "Пропавший свидетель",
-  "Код старого сейфа",
-  "След на снегу",
-  "Дело о тихом соседе",
-  "Шифр из архива",
-  "Исчезнувший поезд",
-  "Послание без подписи",
-  "Ложное алиби",
-  "Тайна заброшенной фабрики",
-  "Письмо из прошлого",
-  "Финал расследования",
-];
-
 const STORAGE_KEY = "crossword-progress"; // ключ сохранения в localStorage
-
-/* ---------- Построение сетки кроссворда ---------- */
-// grid[r][c] = буква или "#" (закрытая клетка)
-// numbers[r][c] = номер вопроса (если клетка — начало слова)
-function buildGrid() {
-  const grid = Array.from({ length: SIZE }, () => Array(SIZE).fill("#"));
-  const numbers = Array.from({ length: SIZE }, () => Array(SIZE).fill(null));
-
-  // Расставляем буквы слов
-  WORDS.forEach((w) => {
-    for (let i = 0; i < w.word.length; i++) {
-      const r = w.dir === "down" ? w.row + i : w.row;
-      const c = w.dir === "down" ? w.col : w.col + i;
-      grid[r][c] = w.word[i];
-    }
-  });
-
-  // Нумеруем начала слов (классический порядок: сверху вниз, слева направо)
-  let num = 1;
-  for (let r = 0; r < SIZE; r++) {
-    for (let c = 0; c < SIZE; c++) {
-      if (grid[r][c] === "#") continue;
-      const isAcross = (c === 0 || grid[r][c - 1] === "#") && c + 1 < SIZE && grid[r][c + 1] !== "#";
-      const isDown = (r === 0 || grid[r - 1][c] === "#") && r + 1 < SIZE && grid[r + 1][c] !== "#";
-      if (isAcross || isDown) numbers[r][c] = num++;
-    }
-  }
-
-  return { grid, numbers };
-}
-
-const { grid, numbers } = buildGrid();
 
 /* ---------- Рендер игрового поля ---------- */
 const crosswordEl = document.getElementById("crossword");
-
-function renderCrossword() {
-  crosswordEl.innerHTML = "";
-
-  for (let r = 0; r < SIZE; r++) {
-    for (let c = 0; c < SIZE; c++) {
-      const cell = document.createElement("div");
-      cell.className = "cell";
-
-      if (grid[r][c] === "#") {
-        cell.classList.add("cell--block");
-      } else {
-        // Номер вопроса в углу клетки
-        if (numbers[r][c]) {
-          const numEl = document.createElement("span");
-          numEl.className = "cell__num";
-          numEl.textContent = numbers[r][c];
-          cell.appendChild(numEl);
-        }
-
-        // Поле для ввода буквы
-        const input = document.createElement("input");
-        input.className = "cell__input";
-        input.maxLength = 1;
-        input.dataset.row = r;
-        input.dataset.col = c;
-        input.setAttribute("aria-label", `Клетка ${r + 1}-${c + 1}`);
-        input.addEventListener("focus", () => showClue(r, c));
-        input.addEventListener("input", () => {
-          input.value = input.value.replace(/[^а-яёА-ЯЁ]/g, "").toUpperCase();
-          if (input.value) moveNext(input);
-          saveProgress();
-        });
-        cell.appendChild(input);
-      }
-
-      crosswordEl.appendChild(cell);
-    }
-  }
-}
-
-/* ---------- Подсказка под полем ---------- */
-const clueEl = document.getElementById("clue-text");
 
 // Находит слово, содержащее клетку (приоритет — горизонтальное)
 function findWordAt(r, c) {
@@ -293,14 +192,6 @@ function findWordAt(r, c) {
     WORDS.find((w) => w.dir === "across" && w.row === r && c >= w.col && c < w.col + w.word.length) ||
     WORDS.find((w) => w.dir === "down" && w.col === c && r >= w.row && r < w.row + w.word.length)
   );
-}
-
-function showClue(r, c) {
-  const w = findWordAt(r, c);
-  if (!w) return;
-  const n = numbers[w.row][w.col];
-  const dir = w.dir === "across" ? "горизонтали" : "вертикали";
-  clueEl.textContent = `${n}. По ${dir}: ${w.clue}`;
 }
 
 /* ---------- Переход к следующей клетке слова ---------- */
@@ -467,8 +358,3 @@ document.addEventListener('keydown', (event) => {
   }
 });
 
-
-/* ---------- Инициализация ---------- */
-renderCrossword();
-//renderQuestions/renderLevels теперь вызываются из .then()
-//  после реальной загрузки levels
