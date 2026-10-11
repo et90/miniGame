@@ -41,7 +41,9 @@ fetch(fileNameGameArray)
     //redrawGame();
     renderQuestions(levels, 15, openShapes, cellColor25);
     renderLevels(levelsName(levels));
-  });
+    setStartButtonsEnabled(true);
+  })
+  .catch(error => console.error('Не удалось загрузить файл уровней:', error));
 
 /**
  * текущий уровень на экране
@@ -243,6 +245,7 @@ function clearProgress() {
 function showScreen(id) {
   document.querySelectorAll(".screen").forEach((s) => s.classList.remove("active"));
   document.getElementById(id).classList.add("active");
+  if (id === "screen-start") updateStartMenu(); // на старте показываем актуальный набор кнопок
 }
 
 // Обрабатываем все кнопки с data-nav
@@ -328,25 +331,67 @@ const gameLevelEl = document.getElementById("game-level");
 
 // «Перейти на уровень» — переносит выбранный уровень в игру
 document.getElementById("btn-go-level").addEventListener("click", () => {
-  gameLevelEl.textContent = `Уровень ${selectedLevel + 1} — ${levelsName(levels)[selectedLevel]}`;
-  showScreen("screen-game");
-  currentLevelIndex = selectedLevel;
   console.log('selectedLevel:', selectedLevel);
+  openLevel(selectedLevel, []);
+});
+
+/* ---------- Стартовый экран: «Старт» / «Продолжить» / «К выбору уровня» / «Как играть» ---------- */
+const startHintEl = document.getElementById("start-hint");
+const btnStart = document.getElementById("btn-start");
+const btnContinue = document.getElementById("btn-continue");
+const btnLevels = document.getElementById("btn-levels");
+
+/**
+ * Первый запуск (нет сохранения) — «Старт» и «Как играть»,
+ * повторный (есть сохранение) — «Продолжить», «К выбору уровня» и «Как играть»
+ */
+function updateStartMenu() {
+  const hasSave = Boolean(loadGameProgress(nameGame));
+  btnStart.hidden = hasSave;
+  btnContinue.hidden = !hasSave;
+  btnLevels.hidden = !hasSave;
+  startHintEl.textContent = hasSave
+    ? "Подсказка: «Продолжить» вернёт сохранённый прогресс"
+    : "Подсказка: с чего начать — загляните в «Как играть»";
+}
+
+// Кнопки запуска игры недоступны, пока не загружен файл уровней
+function setStartButtonsEnabled(enabled) {
+  btnStart.disabled = !enabled;
+  btnContinue.disabled = !enabled;
+}
+
+/**
+ * Открывает уровень на игровом экране и запоминает его как текущий
+ * @param {Number} levelIndex id уровня
+ * @param {Array[Number]} shapes отгаданные слова уровня (для «Продолжить»)
+ */
+function openLevel(levelIndex, shapes) {
+  if (!levels.some(lvl => lvl.id === levelIndex)) return;
+  currentLevelIndex = levelIndex;
+  openShapes = shapes;
+  selectedLevel = levelIndex;
+  selectLevel(levelIndex);
+  saveGameProgress(nameGame, currentLevelIndex, openShapes);
+  gameLevelEl.textContent = `Уровень ${levelIndex + 1} — ${levelsName(levels)[levelIndex]}`;
+  showScreen("screen-game");
   redrawGame();
+}
 
+// «Старт» — новая игра с первого уровня
+btnStart.addEventListener("click", () => {
+  openLevel(0, []);
 });
 
-// «Начать заново» — очищает поле и сохранение
-document.getElementById("btn-restart").addEventListener("click", () => {
-  clearProgress();
-  showScreen("screen-game");
+// «Продолжить» — возвращает сохранённый уровень вместе с отгаданными словами
+btnContinue.addEventListener("click", () => {
+  const save = loadGameProgress(nameGame);
+  if (!save) return;
+  const levelIndex = Number.isInteger(save.currentLevelIndex) ? save.currentLevelIndex : 0;
+  openLevel(levelIndex, Array.isArray(save.openShapes) ? [...save.openShapes] : []);
 });
 
-// «Продолжить» — загружает сохранённый прогресс
-document.getElementById("btn-continue").addEventListener("click", () => {
-  loadProgress();
-  showScreen("screen-game");
-});
+updateStartMenu();
 
 // вешаем салют на пробе
 document.addEventListener('keydown', (event) => {

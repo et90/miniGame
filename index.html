@@ -37,13 +37,15 @@
             <p class="subtitle">Распутывай загадки, буква за буквой</p>
           </div>
 
+          <!-- Кнопки переключаются в main.js: первый запуск — «Старт», повторный — «Продолжить» и «К выбору уровня» -->
           <div class="start__buttons">
-            <button class="btn btn--gold" data-nav="screen-game">Старт</button>
-            <button class="btn btn--outline" id="btn-restart">Начать заново</button>
-            <button class="btn btn--outline" id="btn-continue">Продолжить</button>
+            <button class="btn btn--gold" id="btn-start" disabled>Старт</button>
+            <button class="btn btn--gold" id="btn-continue" disabled hidden>Продолжить</button>
+            <button class="btn btn--outline" id="btn-levels" data-nav="screen-menu" hidden>К выбору уровня</button>
+            <button class="btn btn--outline" data-nav="screen-help">Как играть</button>
           </div>
 
-          <p class="start__hint">Подсказка: «Продолжить» вернёт сохранённый прогресс</p>
+          <p class="start__hint" id="start-hint">Подсказка: «Продолжить» вернёт сохранённый прогресс</p>
         </section>
 
         <!-- ================= ЭКРАН 2: ИГРА ================= -->
@@ -91,6 +93,44 @@
             <button class="btn btn--gold" id="btn-go-level">Перейти на уровень</button>
             <button class="btn btn--outline" data-nav="screen-game">Вернуться в игру</button>
             <button class="btn btn--outline" data-nav="screen-start">В начало</button>
+          </div>
+        </section>
+
+        <!-- ================= ЭКРАН 5: КАК ИГРАТЬ ================= -->
+        <section class="screen screen--help" id="screen-help">
+          <header class="panel__header">
+            <h2>Как играть</h2>
+          </header>
+
+          <div class="questions" id="help-list">
+            <div class="question-item">
+              <span class="question-item__num">1</span>
+              <span class="question-item__text">На поле спрятаны слова: буквы стоят на светлых плитках, остальные клетки пустые.</span>
+            </div>
+            <div class="question-item">
+              <span class="question-item__num">2</span>
+              <span class="question-item__text">Зажмите первую букву слова и проведите линию через все его буквы до последней — порядок букв важен.</span>
+            </div>
+            <div class="question-item">
+              <span class="question-item__num">3</span>
+              <span class="question-item__text">Линия может идти только по горизонтали или по вертикали — диагонали не работают.</span>
+            </div>
+            <div class="question-item">
+              <span class="question-item__num">4</span>
+              <span class="question-item__text">Разгаданное слово окрасится в цвет, а его подсказка подсветится в списке «Вопросы» на экране игры.</span>
+            </div>
+            <div class="question-item">
+              <span class="question-item__num">5</span>
+              <span class="question-item__text">Прогресс сохраняется сам: при следующем запуске просто нажмите «Продолжить».</span>
+            </div>
+            <div class="question-item">
+              <span class="question-item__num">6</span>
+              <span class="question-item__text">Выбрать другой уровень можно в меню — кнопка «К выбору уровня» на старте или «Меню» в игре.</span>
+            </div>
+          </div>
+
+          <div class="panel__footer">
+            <button class="btn btn--gold" data-nav="screen-start">Понятно</button>
           </div>
         </section>
       </div>
